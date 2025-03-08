@@ -1,19 +1,12 @@
 import asyncio
-import ssl
 from websockets.asyncio.client import connect
-
-# Création d'un contexte SSL 
-ssl_context = ssl.create_default_context()
-
-# Désactivation de la vérification du certificat
-ssl_context.check_hostname = False
-ssl_context.verify_mode = ssl.CERT_NONE
 
 # Réception et envoie des messages
 async def handle_message():
-    async with connect("wss://localhost:8000", ping_timeout=120, ssl=ssl_context) as websocket:
+    async with connect("ws://localhost:8000", ping_timeout=120) as websocket:
 
         while True:
+            print()
             message = input("Entrez votre message: ")
       
             await websocket.send(message)

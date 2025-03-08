@@ -1,8 +1,7 @@
+import ollama
 import asyncio
-import ssl
 from websockets.asyncio.server import serve
 from websockets.exceptions import ConnectionClosed
-import ollama
 
 # Le nom du model d'IA utilisée
 model_name = "llama3.2"
@@ -43,15 +42,22 @@ async def handler(websocket):
             print("...Un client s'est déconnecté")
             break
 
-
-# Charger le certificat SSL et la clé privée
-ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-ssl_context.load_cert_chain(certfile="cert.pem", keyfile="key.pem")
-
 async def main():
-    async with serve(handler, "localhost", 8000, ping_timeout=120, ssl=ssl_context) as server:
-        print("Serveur en cours sur wss://localhost:8000")
+    print_chatbot_banner()
+
+    async with serve(handler, "localhost", 8000, ping_timeout=120) as server:
         await server.serve_forever()
 
+def print_chatbot_banner():
+    banner = r'''
+  ____ _           _     ____        _   
+ / ___| |__   __ _| |_  | __ )  ___ | |_ 
+| |   | '_ \ / _` | __| |  _ \ /   \| __|
+| |___| | | | (_| | |_  | |_) | /-\ | |_| 
+ \____|_| |_|\__,_|\__| |____/ \___/\__|
+    
+Serveur en écoute sur wss://localhost:8000
+    '''
+    print(banner)
 
 asyncio.run(main())
